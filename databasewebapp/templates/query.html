@@ -1,0 +1,19 @@
+{% extends 'layout.html' %} {% block content %}
+<h2 align="center">Query</h2>
+<br> {% for mess in messages %}
+<div class="alert alert-info" role="alert">
+    <a class="alert-link">{{mess}} </a>
+</div>
+{% endfor %}
+<!-- {{sql_data_string}} -->
+<form method="POST">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="">SQL</label>
+        <input type="text" class="form-control" name="sql_text" value="">
+    </div>
+    <input type="submit" value="Run" class="btn btn-primary">
+</form>
+<br> {% for i in sql_list %}{{ forloop.counter }} {{i}}
+<h4>-----------------------------------------------------------------------------------------</h4>
+{% endfor %} {% endblock %}
