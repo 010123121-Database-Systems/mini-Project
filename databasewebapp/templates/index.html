@@ -21,7 +21,10 @@
         <option value="">All</option>
       </select>
     <br>
-    <button ailgn="center" type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <!-- <a class="btn btn-primary" href="/insert" role="button">Insert</a>
+    <a class="btn btn-primary" href="/insert " role="button">Delete</a>
+    <a class="btn btn-primary" href="/insert" role="button">Update</a> -->
 </form>
 
 
@@ -34,6 +37,7 @@
             <th>name</th>
             <th>page</th>
             <th>year</th>
+            <th>publisher name</th>
         </tr>
         {% for i in data_list %}
         <tr>
@@ -42,6 +46,7 @@
             <td>{{i.name}}</td>
             <td>{{i.page}}</td>
             <td>{{i.year}}</td>
+            <td>{{i.pb}}</td>
         </tr>
         {% endfor %}
 </table>

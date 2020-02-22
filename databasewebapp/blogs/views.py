@@ -37,7 +37,7 @@ def index(request):
     count = 0
     if flide == 'book':
         for i in cur.fetchall():
-            data_dict = {'id':i[0],'name':i[1],'page':i[2],'year':i[3]}
+            data_dict = {'id':i[0],'name':i[1],'page':i[2],'year':i[3],'pb':i[4]}
             data_list.append(data_dict)
     elif flide == 'author':
         for i in cur.fetchall():
@@ -154,3 +154,57 @@ def query(request):
 
 
     return render(request,'query.html',context)
+
+def insert(request):
+
+    flide1 = request.POST.get('flide')
+    flide = str(flide1)
+    if flide == 'book':
+        cou = 1
+    elif flide == 'author':
+        cou = 2
+    elif flide == 'publisher':
+        cou = 3
+    else:
+        cou = 0
+        
+    context = {
+        'x':'xxx',
+        'cou': cou
+    }
+    return render(request,'insert.html',context)
+
+def ibook(request):
+    id1 = request.POST.get("id")
+    name = request.POST.get("name")
+    page = request.POST.get("page")
+    year = request.POST.get("year")
+    publishern = request.POST.get("publishern")
+    try:
+        conn = psycopg2.connect(host="localhost",database="book1", user="postgres", password="123456")
+        conn.set_client_encoding('UTF8')
+        cur = conn.cursor()
+        sqlText = 'SELECT * From book1 LIMIT 5;'
+        postgres_insert_query = """ INSERT INTO book (b_id, b_name, b_page,b_year, p_name) VALUES (%s,%s,%s,%s,%s)"""
+        record_to_insert = (str(id1), str(name), int(page), str(year), str(publishern))
+        
+        cur.execute(postgres_insert_query, record_to_insert)
+        conn.commit()
+        count = cur.rowcount
+        print (count, "Record inserted successfully into mobile table")
+        messages.info(request, "Record inserted successfully into mobile table")
+        return redirect('/query')
+
+    except (Exception, psycopg2.Error) as error :
+        if(conn):
+            print("Failed to insert record into mobile table", error)
+        messages.info(request,"Error")
+        return redirect('/query')
+
+    finally:
+        #closing database connection.
+        if(conn):
+            cur.close()
+            conn.close()
+            print("PostgreSQL connection is closed")
+    

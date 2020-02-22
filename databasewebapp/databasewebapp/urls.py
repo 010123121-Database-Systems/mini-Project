@@ -27,4 +27,6 @@ urlpatterns = [
     path('login/loginw', views.loginw),
     path('logout/', views.logout),
     path('query/', views.query),
+    path('insert/', views.insert),
+    path('insert/Ibook', views.ibook),
 ]

@@ -24,6 +24,16 @@
                 <li class="nav-item active">
                     <a class="nav-link" href="/query">Query</a>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Modify Table
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/insert">Insert</a>
+                        <a class="dropdown-item" href="/insert">Delete</a>
+                        <a class="dropdown-item" href="/insert">Update</a>
+                    </div>
+                </li>
 
                 <li class="nav-item active">
                     <a class="nav-link" href="/view">View</a>
@@ -33,14 +43,11 @@
                     <a class="nav-link">User {{user.username}}</a>
                 </li>
                 <li class="nav-item active">
-                    <a align="right" class="nav-link" href="/logout">Log Out</a>
+                    <a class="nav-link" href="/logout">Log Out</a>
                 </li>
                 {% else %}
                 <li class="nav-item active">
-                    <a class="nav-link" href="/login">Log In</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                    <a class="btn btn-outline-success my-2 my-sm-0" href="/login">Log In</a>
                 </li>
                 {% endif %}
             </ul>
