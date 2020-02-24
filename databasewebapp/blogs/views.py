@@ -3,12 +3,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User,auth
 from django.contrib import messages
 
-import pandas as pd
 import psycopg2
 import time
-import re
-import ast
-import json
 import time
 from datetime import date
 global sql_data_srting 
@@ -139,17 +135,20 @@ def query(request):
     cur = conn.cursor()
     try:
         if sql_text == "None":
-            sqltext = 'SELECT * From book LIMIT 0; '
-            ax1 = cur.execute(sqltext)
+            sql_text = 'SELECT * From book LIMIT 10; '
+            cur.execute(sql_text)
         else:
-            sqltext = sql_text
-            ax1 = cur.execute(sqltext)
+            sql_text = sql_text
+            cur.execute(sql_text)
     except psycopg2.Error as error:
         messages.info(request,"Syntax Error")
         return redirect('/query')
     sql_list=cur.fetchall()
+    colnames = [desc[0] for desc in cur.description]
     context = {
-        'sql_list':sql_list
+        'sql_list':sql_list,
+        'colnames':colnames,
+        'sql_text':sql_text
     }
 
 
@@ -175,6 +174,7 @@ def insert(request):
     return render(request,'insert.html',context)
 
 def ibook(request):
+    flide1 = request.POST.get('flide')
     id1 = request.POST.get("id")
     name = request.POST.get("name")
     page = request.POST.get("page")
@@ -191,13 +191,13 @@ def ibook(request):
         cur.execute(postgres_insert_query, record_to_insert)
         conn.commit()
         count = cur.rowcount
-        print (count, "Record inserted successfully into mobile table")
-        messages.info(request, "Record inserted successfully into mobile table")
+        print (count, "Record inserted successfully into book table")
+        messages.info(request, "Record inserted successfully into book table")
         return redirect('/query')
 
     except (Exception, psycopg2.Error) as error :
         if(conn):
-            print("Failed to insert record into mobile table", error)
+            print("Failed to insert record into book table", error)
         messages.info(request,"Error")
         return redirect('/query')
 
@@ -207,4 +207,164 @@ def ibook(request):
             cur.close()
             conn.close()
             print("PostgreSQL connection is closed")
+    context = {
+        'x':'xxx',
+        'flide1': flide1
+    }
+    return render(request,'insert.html',context)
+
+def iauthor(request):
+    flide1 = request.POST.get('flide')
+    name = request.POST.get("name")
+    year = request.POST.get("year")
+    try:
+        conn = psycopg2.connect(host="localhost",database="book1", user="postgres", password="123456")
+        conn.set_client_encoding('UTF8')
+        cur = conn.cursor()
+        sqlText = 'SELECT * From book1 LIMIT 5;'
+        postgres_insert_query = """ INSERT INTO author (a_name, a_year) VALUES (%s,%s)"""
+        record_to_insert = ( str(name), str(year))
+        
+        cur.execute(postgres_insert_query, record_to_insert)
+        conn.commit()
+        count = cur.rowcount
+        print (count, "Record inserted successfully into author table")
+        messages.info(request, "Record inserted successfully into author table")
+        return redirect('/query')
+
+    except (Exception, psycopg2.Error) as error :
+        if(conn):
+            print("Failed to insert record into author table", error)
+        messages.info(request,"Error")
+        return redirect('/query')
+
+    finally:
+        #closing database connection.
+        if(conn):
+            cur.close()
+            conn.close()
+            print("PostgreSQL connection is closed")
+
+def ipublisher(request):
+    flide1 = request.POST.get('flide')
+    name = request.POST.get("name")
+    addr = request.POST.get("addr")
+    try:
+        conn = psycopg2.connect(host="localhost",database="book1", user="postgres", password="123456")
+        conn.set_client_encoding('UTF8')
+        cur = conn.cursor()
+        sqlText = 'SELECT * From book1 LIMIT 5;'
+        postgres_insert_query = """ INSERT INTO publisher (p_name, p_address) VALUES (%s,%s)"""
+        record_to_insert = ( str(name), str(addr))
+        
+        cur.execute(postgres_insert_query, record_to_insert)
+        conn.commit()
+        count = cur.rowcount
+        print (count, "Record inserted successfully into publisher table")
+        messages.info(request, "Record inserted successfully into publisher table")
+        return redirect('/query')
+
+    except (Exception, psycopg2.Error) as error :
+        if(conn):
+            print("Failed to insert record into publisher table", error)
+        messages.info(request,"Error")
+        return redirect('/query')
+
+    finally:
+        #closing database connection.
+        if(conn):
+            cur.close()
+            conn.close()
+            print("PostgreSQL connection is closed")
+
+def qdele(request):
+    id_del = request.POST.get('id1')
+    id_colum = request.POST.get('id2')
+    sql_text = str(request.POST.get('sql_text'))
     
+    if id_colum == 'b_id':
+        try:
+            conn = psycopg2.connect(host="localhost",database="book1", user="postgres", password="123456")
+            conn.set_client_encoding('UTF8')
+            cur = conn.cursor()
+            sql_delete_query = """Delete from book where b_id = %s"""
+            cur.execute(sql_delete_query, (str(id_del), ))
+            conn.commit()
+            count = cur.rowcount
+            print(count, "Record deleted successfully ")
+            messages.info(request, "Record deleted successfully ")
+            return redirect('/query')
+        except (Exception, psycopg2.Error) as error:
+            print("Error in Delete operation", error)
+            messages.info(request, "Error in Delete operation")
+            return redirect('/query')
+
+        finally:
+            # closing database connection.
+            if (conn):
+                cur.close()
+                conn.close()
+                print("PostgreSQL connection is closed")
+                # messages.info(request, "PostgreSQL connection is closed")
+                return redirect('/query')
+    if id_colum == 'a_name':
+        try:
+            conn = psycopg2.connect(host="localhost",database="book1", user="postgres", password="123456")
+            conn.set_client_encoding('UTF8')
+            cur = conn.cursor()
+            # Update single record now
+            sql_delete_query = """Delete from author where a_name = %s"""
+            cur.execute(sql_delete_query, (str(id_del), ))
+            conn.commit()
+            count = cur.rowcount
+            print(count, "Record deleted successfully ")
+            messages.info(request, "Record deleted successfully ")
+            return redirect('/query')
+        except (Exception, psycopg2.Error) as error:
+            print("Error in Delete operation", error)
+            messages.info(request, "Error in Delete operation")
+            return redirect('/query')
+
+        finally:
+            # closing database connection.
+            if (conn):
+                cur.close()
+                conn.close()
+                print("PostgreSQL connection is closed")
+                messages.info(request, "PostgreSQL connection is closed")
+                return redirect('/query')
+    if id_colum == 'p_name':
+        try:
+            conn = psycopg2.connect(host="localhost",database="book1", user="postgres", password="123456")
+            conn.set_client_encoding('UTF8')
+            cur = conn.cursor()
+            # Update single record now
+            sql_delete_query = """Delete from publisher where p_name = %s"""
+            cur.execute(sql_delete_query, (str(id_del), ))
+            conn.commit()
+            count = cur.rowcount
+            print(count, "Record deleted successfully ")
+            messages.info(request, "Record deleted successfully ")
+            return redirect('/query')
+
+        except (Exception, psycopg2.Error) as error:
+            print("Error in Delete operation", error)
+            messages.info(request, "Error in Delete operation")
+            return redirect('/query')
+
+        finally:
+            # closing database connection.
+            if (conn):
+                cur.close()
+                conn.close()
+                print("PostgreSQL connection is closed")
+                # messages.info(request, "PostgreSQL connection is closed")
+                return redirect('/query')
+
+
+    messages.info(request, str(id_del)+str(id_colum))
+    print(id_del)
+    print(sql_text)
+    return redirect('/query')
+    
+    # return render(request,'query.html')

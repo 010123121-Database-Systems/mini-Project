@@ -29,4 +29,7 @@ urlpatterns = [
     path('query/', views.query),
     path('insert/', views.insert),
     path('insert/Ibook', views.ibook),
+    path('insert/Iauthor', views.iauthor),
+    path('insert/Ipublisher', views.ipublisher),
+    path('query/Qdele', views.qdele),
 ]

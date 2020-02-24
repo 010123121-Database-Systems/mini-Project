@@ -38,6 +38,8 @@
             <th>page</th>
             <th>year</th>
             <th>publisher name</th>
+            <!-- <th>Update</th>
+            <th>Delete</th> -->
         </tr>
         {% for i in data_list %}
         <tr>
@@ -47,9 +49,15 @@
             <td>{{i.page}}</td>
             <td>{{i.year}}</td>
             <td>{{i.pb}}</td>
+            <!-- <td><a class="btn btn-primary" href="/home" role="button">Edit</a></td>
+            <td><a class="btn btn-primary" href="/home" role="button">Delete</a></td> -->
         </tr>
         {% endfor %}
 </table>
+<div class="form-group">
+    <label for="">Time</label>
+    <input type="text" class="form-control" name="sq" value="{{time_cou}}">
+</div>
 {% elif flide == 'author' %}
 <table class="table">
     <thead class="thead-dark">
@@ -66,6 +74,10 @@
         </tr>
         {% endfor %}
 </table>
+<div class="form-group">
+    <label for="">Time</label>
+    <input type="text" class="form-control" name="sq" value="{{time_cou}}">
+</div>
 {% elif flide == 'publisher' %}
 <table class="table">
     <thead class="thead-dark">
@@ -82,10 +94,9 @@
         </tr>
         {% endfor %}
 </table>
-{% endif %}
-<br>
 <div class="form-group">
     <label for="">Time</label>
     <input type="text" class="form-control" name="sq" value="{{time_cou}}">
 </div>
-{% endblock %}
+{% endif %}
+<br> {% endblock %}
