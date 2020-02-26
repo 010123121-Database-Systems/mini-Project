@@ -26,7 +26,7 @@ def index(request):
         if num1 != "":
             sqlText = 'SELECT * From ' + flide + ' LIMIT ' + num1 + ';'
         else:
-            sqlText = 'SELECT * From ' + flide + ' LIMIT 1000 ;'
+            sqlText = 'SELECT * From ' + flide + ' LIMIT 10000 ;'
     ax1 = cur.execute(sqlText)
     data_dict = {}
     data_list = []
@@ -368,3 +368,65 @@ def qdele(request):
     return redirect('/query')
     
     # return render(request,'query.html')
+
+def search(request):
+    seach_book = str(request.POST.get('seach_book')).capitalize()
+    seach_author = str(request.POST.get('seach_author')).capitalize()
+    seach_publisher = str(request.POST.get('seach_publisher')).capitalize()
+    
+    num1 = str(request.POST.get('num1'))
+    conn = psycopg2.connect(host="localhost",database="book1", user="postgres", password="123456")
+    conn.set_client_encoding('UTF8')
+    cur = conn.cursor() 
+    if seach_book == '' or seach_book == "None":
+        seach_book = ''
+        sqbook = '%'
+        cou = 1
+    else:
+        sqbook = seach_book + '%'
+        cou = 1
+
+    if seach_author == '' or seach_author == "None":
+        seach_author= ''
+        sqauthor = '%'
+        cou = 1
+    else:
+        sqauthor = seach_author + '%'
+        cou = 1
+
+    if seach_publisher == '' or seach_publisher == "None":
+        seach_publisher=''
+        sqpublisher = '%'
+        cou = 1
+    else:
+        sqpublisher = seach_publisher + '%'
+        cou = 1
+
+    if sqbook == '%' and sqauthor == '%' and sqpublisher == '%':
+        limsql = 'limit 25 ;'
+        cou = 0
+    else:
+        limsql = ' ;'
+    # if seach_book == '' or seach_book == "None" and seach_author == '' or seach_author == "None" and seach_publisher == '' or seach_publisher == "None":
+    #     cou = 0
+
+    sqltext = """select book.b_name, work_for.a_name,    work_for.p_name from work_for 
+    inner join write_for on work_for.a_name = write_for.a_name
+    inner join book on write_for.b_id = book.b_id
+    where book.b_name like """ + "'"+ sqbook +"'" + """ and work_for.a_name like """+ "'"+ sqauthor +"'" +  """  
+    and work_for.p_name like """+ "'"+ sqpublisher +"' " +  limsql
+    cur.execute(sqltext)    
+    sql_list=cur.fetchall()
+    colnames = [desc[0] for desc in cur.description]
+    context = {
+        'sql_list':sql_list,
+        'colnames':colnames,
+        'cou': cou,
+        'seach_book':seach_book,
+        'seach_author':seach_author,
+        'seach_publisher':seach_publisher
+    }
+    print(sqbook)
+    print(sqauthor)
+    print(sqpublisher)
+    return render(request,'seach.html',context)

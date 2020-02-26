@@ -32,4 +32,5 @@ urlpatterns = [
     path('insert/Iauthor', views.iauthor),
     path('insert/Ipublisher', views.ipublisher),
     path('query/Qdele', views.qdele),
+    path('search/', views.search),
 ]
