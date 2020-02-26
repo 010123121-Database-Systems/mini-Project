@@ -8,9 +8,21 @@
     </div>
     <input type="submit" value="run" class="btn-primary">
 </form> -->
+<br>
+<ul class=" list-group list-group-horizontal ">
+    <li class="list-group-item ">Book</li>
+    <li class="list-group-item ">{{count1.0}}</li>
+    <h1>&nbsp;</h1>
+    <li class="list-group-item ">Author</li>
+    <li class="list-group-item ">{{count1.1}}</li>
+    <h1>&nbsp;</h1>
+    <li class="list-group-item ">Publisher</li>
+    <li class="list-group-item ">{{count1.2}}</li>
+</ul>
+<br>
 <form method="POST">
     {% csrf_token %}
-    <select class="form-control form-control-lg" id="flide" name="flide"> 
+    <select class="form-control form-control-lg " id="flide" name="flide"> 
     <option value="book">book</option>
     <option value="author">author</option>
     <option value="publisher">publisher</option>

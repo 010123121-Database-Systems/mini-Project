@@ -11,6 +11,7 @@ global sql_data_srting
 
 def index(request):
     sql_data = []
+    count1 = []
     time_start = time.time()
     flide1 = request.POST.get('flide')
     flide = str(flide1)
@@ -18,6 +19,18 @@ def index(request):
     conn = psycopg2.connect(host="localhost",database="book1", user="postgres", password="123456")
     conn.set_client_encoding('UTF8')
     cur = conn.cursor() 
+    curb = conn.cursor() 
+    cura = conn.cursor() 
+    curp = conn.cursor() 
+    sqlText_b = 'SELECT count(b_id) From book ;'
+    sqlText_a = 'SELECT count(a_name) From author ;'
+    sqlText_p = 'SELECT count(p_name) From publisher ;'
+    curb.execute(sqlText_b)
+    cura.execute(sqlText_a)
+    curp.execute(sqlText_p)
+    count1.append(curb.fetchall()[0][0])
+    count1.append(cura.fetchall()[0][0])
+    count1.append(curp.fetchall()[0][0])
     # sqlText = 'SELECT * From book LIMIT 10;'
     if flide == "None" or num1 == "None":
         sqlText = 'SELECT * From book LIMIT 10;'
@@ -54,7 +67,8 @@ def index(request):
         'aa':["asd",'sss','ddd'],
         'data_list':data_list,
         'time_cou':time_cou,
-        'flide':flide1
+        'flide':flide1,
+        'count1':count1
     }
     return render(request,'index.html',context)
 
